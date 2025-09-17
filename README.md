@@ -4,7 +4,7 @@ A comprehensive full-stack platform for motorbike and scooter rentals with deliv
 
 ![UrbanMoto](https://img.shields.io/badge/UrbanMoto-Rental_Platform-blue?style=for-the-badge)
 ![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)
-![Node.js](https://img.shields.io/badge/Node.js-Express-green?style=for-the-badge&logo=node.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue?style=for-the-badge&logo=postgresql)
 ![Stripe](https://img.shields.io/badge/Stripe-Payments-purple?style=for-the-badge&logo=stripe)
 
@@ -29,229 +29,269 @@ A comprehensive full-stack platform for motorbike and scooter rentals with deliv
 
 ## 🛠️ Tech Stack
 
-### Frontend
-- **Next.js 14** - React framework with App Router
+### Frontend & Backend (Full-Stack Next.js)
+- **Next.js 14** - React framework with App Router and API Routes
 - **TypeScript** - Type-safe development
 - **Tailwind CSS** - Utility-first CSS framework
 - **Shadcn/ui** - Modern UI component library
 - **Lucide React** - Beautiful icons
-
-### Backend
-- **Node.js** - JavaScript runtime
-- **Express.js** - Web application framework
-- **PostgreSQL** - Relational database
+- **PostgreSQL** - Database (via Neon integration)
 - **JWT** - JSON Web Tokens for authentication
-- **Bcrypt** - Password hashing
-- **Multer** - File upload handling
-- **Express Rate Limit** - API rate limiting
-
-### Payment & Services
 - **Stripe** - Payment processing
-- **Nodemailer** - Email notifications
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 - Node.js (v18 or higher)
-- PostgreSQL (v13 or higher)
 - npm or yarn package manager
+- PostgreSQL database (we recommend using Neon for easy setup)
 
 ### Installation
 
-1. **Clone the repository**
+1. **Clone and Install**
    ```bash
    git clone <repository-url>
    cd urbanmoto-platform
+   npm install
    ```
 
-2. **Install dependencies**
-   ```bash
-   # Install backend dependencies
-   npm install
+2. **Database Setup**
    
-   # Install frontend dependencies
-   cd client
-   npm install
-   cd ..
-   ```
-
-3. **Database Setup**
+   **Option A: Using Neon (Recommended)**
+   - Sign up at [neon.tech](https://neon.tech)
+   - Create a new database
+   - Copy the connection string
    
-   Create a PostgreSQL database:
+   **Option B: Local PostgreSQL**
    ```sql
    CREATE DATABASE urbanmoto;
    ```
+
+3. **Environment Variables**
    
-   Run the database schema:
-   ```bash
-   psql -U your_username -d urbanmoto -f server/database/schema.sql
+   Create a `.env.local` file in the root directory:
+   ```env
+   # Database (use your Neon connection string or local PostgreSQL)
+   DATABASE_URL="postgresql://username:password@host:5432/urbanmoto"
+   
+   # JWT Secret (generate a secure random string)
+   JWT_SECRET="your-super-secret-jwt-key-minimum-32-characters-long"
+   
+   # Stripe Keys (get from Stripe Dashboard)
+   STRIPE_SECRET_KEY="sk_test_your_stripe_secret_key"
+   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_your_stripe_publishable_key"
+   STRIPE_WEBHOOK_SECRET="whsec_your_webhook_secret"
+   
+   # App URLs
+   NEXT_PUBLIC_API_URL="http://localhost:3000"
+   FRONTEND_URL="http://localhost:3000"
+   
+   # Optional: For file uploads (Cloudinary example)
+   CLOUDINARY_CLOUD_NAME="your_cloud_name"
+   CLOUDINARY_API_KEY="your_api_key"
+   CLOUDINARY_API_SECRET="your_api_secret"
    ```
 
-4. **Environment Configuration**
+4. **Initialize Database**
    
-   Backend (.env):
-   ```env
-   # Database
-   DATABASE_URL=postgresql://username:password@localhost:5432/urbanmoto
-   
-   # Server
-   PORT=5000
-   FRONTEND_URL=http://localhost:3000
-   
-   # JWT
-   JWT_SECRET=your-super-secret-jwt-key-here
-   
-   # Stripe
-   STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key
-   STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret
-   
-   # Email (optional)
-   EMAIL_HOST=smtp.gmail.com
-   EMAIL_PORT=587
-   EMAIL_USER=your-email@gmail.com
-   EMAIL_PASS=your-app-password
+   Run the database schema setup script:
+   ```bash
+   npm run db:setup
    ```
    
-   Frontend (.env.local):
-   ```env
-   NEXT_PUBLIC_API_URL=http://localhost:5000
-   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_publishable_key
+   Or manually run the SQL schema:
+   ```bash
+   # If using local PostgreSQL
+   psql -U your_username -d urbanmoto -f scripts/schema.sql
    ```
 
-5. **Start the development servers**
+5. **Seed Database (Optional)**
    ```bash
-   # Start backend server (from root directory)
-   npm run server
-   
-   # Start frontend development server (from another terminal)
-   cd client
+   # Add sample data for testing
+   npm run db:seed
+   ```
+
+6. **Start Development Server**
+   ```bash
    npm run dev
    ```
    
-   Backend: http://localhost:5000  
-   Frontend: http://localhost:3000
+   The application will be available at `http://localhost:3000`
 
-## 📊  Database Schema
+## 🏗️ Project Structure
 
-The application uses a comprehensive PostgreSQL schema with the following main tables:
+```
+urbanmoto-platform/
+├── app/                    # Next.js App Router pages
+│   ├── api/               # API routes (backend endpoints)
+│   ├── (auth)/            # Authentication pages
+│   ├── dashboard/         # User dashboard
+│   ├── vendor/            # Vendor management portal
+│   ├── vehicles/          # Vehicle browsing
+│   └── ...
+├── components/            # React components
+│   ├── ui/               # Base UI components (shadcn/ui)
+│   ├── auth/             # Authentication components
+│   ├── booking/          # Booking-related components
+│   ├── vehicle/          # Vehicle display components
+│   └── ...
+├── lib/                  # Utility functions and configurations
+│   ├── db/              # Database utilities
+│   ├── auth/            # Authentication utilities
+│   ├── stripe/          # Payment utilities
+│   └── ...
+├── hooks/                # Custom React hooks
+├── scripts/              # Database scripts and utilities
+├── types/               # TypeScript type definitions
+└── public/              # Static assets
+```
+
+## 📡 API Routes
+
+All API endpoints are available at `/api/*` and include:
+
+### Authentication
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/login` - User login
+- `GET /api/auth/verify` - Verify JWT token
+- `POST /api/auth/logout` - User logout
+
+### Vehicles
+- `GET /api/vehicles` - Get vehicles with filters (search, category, price range)
+- `GET /api/vehicles/[id]` - Get vehicle details
+- `POST /api/vehicles` - Create vehicle (vendor only)
+- `PUT /api/vehicles/[id]` - Update vehicle (vendor only)
+- `DELETE /api/vehicles/[id]` - Delete vehicle (vendor only)
+
+### Bookings
+- `POST /api/bookings` - Create booking
+- `GET /api/bookings` - Get user bookings
+- `GET /api/bookings/[id]` - Get booking details
+- `PUT /api/bookings/[id]/cancel` - Cancel booking
+- `GET /api/bookings/[id]/tracking` - Get real-time tracking data
+
+### Payments
+- `POST /api/payments/create-intent` - Create Stripe payment intent
+- `POST /api/payments/webhook` - Stripe webhook handler
+- `GET /api/payments/methods` - Get user's saved payment methods
+- `POST /api/payments/methods` - Add a payment method
+
+### Dashboard
+- `GET /api/dashboard/overview` - Get dashboard data
+- `GET /api/dashboard/stats` - Get booking statistics
+- `GET /api/dashboard/earnings` - Get vendor earnings data
+
+## 🗃️ Database Schema
+
+The application uses PostgreSQL with the following main tables:
 
 - **users** - User accounts and profiles
-- **vendors** - Vehicle rental vendors
+- **vendors** - Vehicle rental vendors  
 - **vehicles** - Available motorbikes and scooters
+- **vehicle_categories** - Vehicle types (scooter, motorcycle, etc.)
 - **bookings** - Rental bookings and reservations
 - **deliveries** - Delivery orders and requests
 - **payments** - Payment transactions and methods
-- **tracking** - Real-time location tracking
-- **delivery_tracking** - Delivery-specific tracking
+- **tracking_locations** - Real-time location tracking
 - **reviews** - User reviews and ratings
 
 
-
-## 🔌 API Reference
-
-### Authentication
-| Endpoint | Method | Description | Auth Required |
-|----------|--------|-------------|---------------|
-| `/api/auth/register` | POST | User registration | No |
-| `/api/auth/login` | POST | User login | No |
-| `/api/auth/logout` | POST | User logout | Yes |
-| `/api/auth/verify` | GET | Verify JWT token | Yes |
-
-### Vehicles
-| Endpoint | Method | Description | Auth Required |
-|----------|--------|-------------|---------------|
-| `/api/vehicles` | GET | Get vehicles with filters | No |
-| `/api/vehicles/:id` | GET | Get vehicle details | No |
-| `/api/vehicles` | POST | Create vehicle | Vendor |
-| `/api/vehicles/:id` | PUT | Update vehicle | Vendor |
-| `/api/vehicles/:id` | DELETE | Delete vehicle | Vendor |
-
-### Bookings
-| Endpoint | Method | Description | Auth Required |
-|----------|--------|-------------|---------------|
-| `/api/bookings` | POST | Create booking | Yes |
-| `/api/bookings` | GET | Get user bookings | Yes |
-| `/api/bookings/:id` | GET | Get booking details | Yes |
-| `/api/bookings/:id/status` | PUT | Update booking status | Vendor |
-
-For complete API documentation, visit our [API Docs](https://docs.urbanmoto.com/api).
-
-## 🧪 Development Scripts
+## 📋 Development Scripts
 
 ```bash
-# Start backend server
-npm run server
-
-# Start frontend development
+# Start development server
 npm run dev
 
-# Build frontend for production
+# Build for production
 npm run build
 
-# Start production frontend
-npm run start
+# Start production server
+npm start
 
-# Run database migrations
-npm run migrate
+# Setup database schema
+npm run db:setup
 
 # Seed database with sample data
-npm run seed
+npm run db:seed
 
-# Run tests
-npm run test
+# Type checking
+npm run type-check
+
+# Linting
+npm run lint
+
+# Format code with Prettier
+npm run format
 ```
 
-## 🚢 Deployment
+## 🚀 Deployment
 
-### Backend Deployment
-1. Set up PostgreSQL database on your hosting provider
-2. Configure environment variables
-3. Deploy to platforms like Heroku, Railway, or DigitalOcean
-4. Run database migrations
+### Vercel (Recommended)
+1. Push your code to GitHub
+2. Connect your repository to Vercel
+3. Add environment variables in Vercel dashboard
+4. Deploy automatically on push
 
-### Frontend Deployment
+### Other Platforms
 1. Build the application: `npm run build`
-2. Deploy to Vercel, Netlify, or similar platforms
-3. Configure environment variables
-4. Set up custom domain (optional)
-
-### Docker Deployment (Alternative)
-```bash
-# Build and run with Docker Compose
-docker-compose up -d
-
-# Run migrations in container
-docker-compose exec backend npm run migrate
-```
-
-## 🛡️ Security Features
-
-- **JWT Authentication** - Secure token-based authentication
-- **Password Hashing** - Bcrypt for secure password storage
-- **Rate Limiting** - API rate limiting to prevent abuse
-- **Input Validation** - Comprehensive input validation and sanitization
-- **CORS Protection** - Cross-origin resource sharing configuration
-- **SQL Injection Prevention** - Parameterized queries
-- **XSS Protection** - Content Security Policy headers
+2. Set up environment variables
+3. Deploy the `.next` folder and `package.json`
+4. Ensure PostgreSQL database is accessible
 
 
+## 🔧 Environment Variables Reference
 
-## 🗺️ Roadmap
+| Variable | Description | Required | Default |
+|----------|-------------|----------|---------|
+| `DATABASE_URL` | PostgreSQL connection string | Yes | - |
+| `JWT_SECRET` | Secret for JWT token signing | Yes | - |
+| `STRIPE_SECRET_KEY` | Stripe secret key | Yes | - |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Stripe publishable key | Yes | - |
+| `STRIPE_WEBHOOK_SECRET` | Stripe webhook secret | Yes | - |
+| `NEXT_PUBLIC_API_URL` | Frontend API URL | Yes | http://localhost:3000 |
+| `FRONTEND_URL` | Frontend URL for CORS | Yes | http://localhost:3000 |
+| `UPLOAD_PATH` | File upload directory | No | ./uploads |
+| `NODE_ENV` | Environment mode | No | development |
 
-- [ ] Mobile app development (React Native)
-- [ ] Advanced analytics dashboard
-- [ ] Multi-language support
-- [ ] Integration with mapping services
-- [ ] AI-powered recommendations
-- [ ] Fleet management tools
-- [ ] Insurance integration
-- [ ] Loyalty program
+## 🐛 Troubleshooting
 
-## 🙏 Acknowledgments
+### Common Issues
 
-- Icons by [Lucide](https://lucide.dev)
-- UI components by [Shadcn/ui](https://ui.shadcn.com)
-- Payment processing by [Stripe](https://stripe.com)
+1. **Database Connection Error**
+   - Verify `DATABASE_URL` is correct and properly quoted
+   - Ensure database exists and is accessible
+   - Check firewall settings for remote databases
+   - Run `npm run db:check` to test database connection
+
+2. **Authentication Not Working**
+   - Verify `JWT_SECRET` is set and secure (32+ characters)
+   - Check browser localStorage for tokens
+   - Ensure API routes are accessible
+
+3. **Stripe Payments Failing**
+   - Verify Stripe keys are correct and match (test/live)
+   - Check webhook endpoint configuration
+   - Ensure HTTPS for production webhooks
+   - Test with Stripe test cards
+
+4. **Build Errors**
+   - Run `npm run type-check` to identify TypeScript errors
+   - Ensure all environment variables are set
+   - Check for missing dependencies with `npm install`
+
+5. **File Upload Issues**
+   - Check directory permissions for upload path
+   - Verify Cloudinary credentials if using cloud storage
+
+
+### Development Guidelines
+- Follow TypeScript best practices
+- Use Tailwind CSS for styling
+- Write tests for new features
+- Update documentation for API changes
+- Ensure responsive design for mobile devices
+
+
 
 ---
 
