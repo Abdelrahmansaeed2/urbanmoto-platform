@@ -234,13 +234,7 @@ docker-compose exec backend npm run migrate
 - **SQL Injection Prevention** - Parameterized queries
 - **XSS Protection** - Content Security Policy headers
 
-## 🆘 Support
 
-For support and questions:
-- 📋 Create an issue on GitHub
-- 📧 Email: support@urbanmoto.com
-- 📚 Documentation: [docs.urbanmoto.com](https://docs.urbanmoto.com)
-- 💬 Join our Discord community
 
 ## 🗺️ Roadmap
 
